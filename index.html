@@ -1,846 +1,577 @@
 <!doctype html>
 <html lang="pt-BR">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema Vidraceiro Pro - V1.0</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sistema Vidraceiro Pro - V1.1</title>
   <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
   <style>
     /* ------------------------------------------- */
-    /* Estilos Gerais e Reset */
+    /* Reset + Base */
     /* ------------------------------------------- */
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
     body {
-      box-sizing: border-box;
       margin: 0;
-      padding: 0;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh; /* Alterado para ocupar a tela toda */
+      min-height: 100vh;
       padding: 24px;
     }
-    
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    
+    .container { max-width: 1200px; margin: 0 auto; }
+
     /* ------------------------------------------- */
-    /* Header e Navegação (UI/Hierarquia) */
+    /* Header */
     /* ------------------------------------------- */
     .header {
       background: white;
       padding: 32px;
       border-radius: 16px;
-      box-shadow: 0 8px 15px rgba(0,0,0,0.15); /* Sombra mais destacada */
+      box-shadow: 0 8px 15px rgba(0,0,0,0.15);
       margin-bottom: 30px;
       text-align: center;
     }
-    
     .header h1 {
       margin: 0 0 8px 0;
-      font-size: 36px; /* Fonte maior para título principal */
+      font-size: 36px;
       color: #1a202c;
       font-weight: 800;
     }
-    
     .header p {
       margin: 0;
-      font-size: 18px; /* Fonte maior */
+      font-size: 18px;
       color: #718096;
     }
-    
-    .tabs {
-      display: flex;
-      gap: 16px; /* Espaçamento entre abas */
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-    }
-    
+
+    /* ------------------------------------------- */
+    /* Tabs */
+    /* ------------------------------------------- */
+    .tabs { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
     .tab-button {
-      flex: 1;
-      min-width: 150px;
-      padding: 16px 24px;
-      background: white;
-      border: none;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      display: flex; /* Para ícone e texto */
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
+      flex: 1; min-width: 150px; padding: 16px 24px; background: white; border: none; border-radius: 12px;
+      font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; gap: 10px;
     }
-    
-    .tab-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    }
-    
-    .tab-button.active {
-      background: #667eea;
-      color: white;
-      box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
-    }
-    
+    .tab-button:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+    .tab-button.active { background: #667eea; color: white; box-shadow: 0 6px 12px rgba(102,126,234,0.4); }
+
     .content-card {
-      background: white;
-      padding: 32px;
-      border-radius: 16px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      overflow: hidden; /* Para transição de resultados */
+      background: white; padding: 32px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      overflow: hidden;
     }
-    
     .section-title {
-      font-size: 28px; /* Título de seção maior */
-      font-weight: 700;
-      color: #1a202c;
-      margin: 0 0 24px 0;
-      padding-bottom: 12px;
-      border-bottom: 4px solid #667eea; /* Borda mais grossa */
-    }
-    
-    /* ------------------------------------------- */
-    /* Card de Informação e Modelos (UX) */
-    /* ------------------------------------------- */
-    .ferragens-info {
-        /* Melhoria de cor para destaque informativo (Não Erro/Aviso) */
-        background: #e0f2fe; /* Azul claro para info */
-        border: 2px solid #38bdf8; /* Borda azul */
-        border-radius: 12px;
-        padding: 18px; 
-        margin: 24px 0;
-        text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-    
-    .ferragens-info strong {
-        color: #0369a1;
-        font-size: 16px;
-        font-weight: 700;
-    }
-    
-    /* Modelos Padrão (Manutenção do estilo, mas removido do fluxo de UX) */
-    .models-grid {
-      display: none; /* Desabilitado para focar na calculadora */
-    }
-    
-    /* ------------------------------------------- */
-    /* Calculadora (UX/Usabilidade) */
-    /* ------------------------------------------- */
-    .calculator-section {
-      background: #f7fafc;
-      padding: 30px;
-      border-radius: 12px;
-      margin-top: 24px;
-      border: 1px solid #e2e8f0;
-    }
-    
-    .input-group {
-      margin-bottom: 20px;
-    }
-    
-    .input-group label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: #2d3748;
-      font-size: 16px; /* Fonte maior para rótulos */
-    }
-    
-    .input-row {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-    
-    .input-field {
-      flex: 1;
-      min-width: 250px; /* Aumenta a largura mínima do input */
-    }
-    
-    .input-field input, .glass-options select {
-      width: 100%;
-      padding: 14px 16px; /* Aumenta o padding do input */
-      border: 2px solid #e2e8f0;
-      border-radius: 10px; /* Borda mais arredondada */
-      font-size: 17px;
-      transition: all 0.3s;
-    }
-    
-    .input-field input:focus, .glass-options select:focus {
-      outline: none;
-      border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
-    }
-    
-    .glass-options {
-        margin-top: 30px;
-        padding-top: 15px;
-        border-top: 1px dashed #cbd5e0; /* Separador para Vidro */
+      font-size: 28px; font-weight: 700; color: #1a202c; margin: 0 0 24px 0;
+      padding-bottom: 12px; border-bottom: 4px solid #667eea;
     }
 
-    .checkbox-group {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-top: 24px;
-      font-size: 16px;
-      font-weight: 600;
-      color: #2d3748;
-    }
-    
-    .checkbox-group input[type="checkbox"] {
-      width: 24px; /* Checkbox maior */
-      height: 24px;
-      cursor: pointer;
-      border: 2px solid #667eea;
-      border-radius: 4px;
-    }
-    
-    .calculate-button {
-      width: 100%;
-      padding: 18px; /* Botão maior */
-      background: #667eea;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 20px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.3s, transform 0.2s;
-      margin-top: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-    
-    .calculate-button:hover {
-      background: #5568d3;
-      transform: translateY(-1px);
-    }
-    
-    /* ------------------------------------------- */
-    /* Resultados e Visualização (UX/Clareza) */
-    /* ------------------------------------------- */
-    .results {
-      margin-top: 30px;
-      padding: 24px;
-      background: #f0f4ff; /* Fundo mais suave para resultados */
-      border-radius: 12px;
-      border: 3px solid #667eea; /* Borda de destaque */
-      opacity: 0; /* Começa oculto */
-      transform: translateY(20px);
-      transition: all 0.5s ease-out; /* Transição suave */
-    }
-    
-    .results.visible {
-      opacity: 1;
-      transform: translateY(0);
+    .ferragens-info{
+      background:#e0f2fe;border:2px solid #38bdf8;border-radius:12px;padding:18px;margin:24px 0;
+      text-align:center;display:flex;align-items:center;justify-content:center;gap:10px;
+      box-shadow:0 2px 4px rgba(0,0,0,0.05)
     }
 
-    .results h3 {
-      margin: 0 0 16px 0;
-      color: #3f51b5; /* Cor mais escura de azul */
-      font-size: 22px;
-      font-weight: 700;
+    .calculator-section{background:#f7fafc;padding:30px;border-radius:12px;margin-top:24px;border:1px solid #e2e8f0}
+    .input-group{margin-bottom:20px}
+    .input-group label{display:block;font-weight:600;margin-bottom:8px;color:#2d3748;font-size:16px}
+    .input-row{display:flex;gap:16px;flex-wrap:wrap}
+    .input-field{flex:1;min-width:250px}
+    .input-field input,.glass-options select{
+      width:100%;padding:14px 16px;border:2px solid #e2e8f0;border-radius:10px;font-size:17px;transition:all .3s
     }
-    
-    .result-item {
-      padding: 15px;
-      background: white;
-      border-radius: 10px;
-      margin-bottom: 15px;
-      border-left: 5px solid #667eea;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    .input-field input:focus,.glass-options select:focus{
+      outline:none;border-color:#667eea;box-shadow:0 0 0 3px rgba(102,126,234,0.2)
     }
-    
-    /* Destaque para a Medida de Produção */
-    .result-item.highlighted {
-        background: #e9d5ff; /* Roxo Claro */
-        border-left: 8px solid #9333ea; /* Roxo Forte */
-        padding: 20px 15px;
+    .glass-options{margin-top:30px;padding-top:15px;border-top:1px dashed #cbd5e0}
+    .checkbox-group{display:flex;align-items:center;gap:12px;margin-top:24px;font-size:16px;font-weight:600;color:#2d3748}
+    .checkbox-group input[type="checkbox"]{width:24px;height:24px;cursor:pointer;border:2px solid #667eea;border-radius:4px}
+    .calculate-button{
+      width:100%;padding:18px;background:#667eea;color:#fff;border:none;border-radius:10px;font-size:20px;font-weight:700;
+      cursor:pointer;transition:background .3s, transform .2s;margin-top:30px;display:flex;align-items:center;justify-content:center;gap:10px
     }
-    
-    .result-item.highlighted .result-label {
-        color: #6d28d9;
-        font-size: 16px;
-    }
-    
-    .result-item.highlighted .result-value {
-        color: #9333ea;
-        font-size: 24px;
-        font-weight: 900;
-    }
-    
-    .result-label {
-      font-weight: 600;
-      color: #4a5568;
-      margin-bottom: 4px;
-      font-size: 14px;
-    }
-    
-    .result-value {
-      font-size: 18px;
-      color: #667eea;
-      font-weight: 700;
-    }
-    
-    .results-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 30px; /* Aumenta o espaçamento */
-    }
-    
-    .box-visual {
-      background: white;
-      border: 2px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 30px 15px; /* Ajuste para o rótulo lateral */
-      min-height: 420px; /* Altura mínima maior */
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      position: relative; /* Para rótulos e indicadores */
-    }
-    
-    .original-vao-label {
-        margin-top: 15px;
-        padding: 8px 15px;
-        background: #fffbe0; /* Amarelo Claro para Aviso/Referência */
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 600;
-        color: #92400e;
-        border: 1px solid #f59e0b;
-        text-align: center;
-        width: 100%;
-    }
-    
-    /* Indicador de Funcionamento (Ex: Pivô, Basculante) */
-    .action-indicator {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        font-size: 28px;
-        color: #667eea;
-        font-weight: bold;
-        opacity: 0.8;
-        z-index: 10;
-        line-height: 1;
-    }
-    
-    .glass-diagram, .box-diagram {
-        /* Centralização vertical */
-        align-items: flex-end; 
-    }
-    
-    .dimension-label {
-        z-index: 20;
-    }
-    
+    .calculate-button:hover{background:#5568d3;transform:translateY(-1px)}
+
     /* ------------------------------------------- */
-    /* Media Queries e Impressão */
+    /* Results */
     /* ------------------------------------------- */
-    @media (max-width: 900px) {
-      .results-layout {
-        grid-template-columns: 1fr;
-      }
-      .input-field {
-        min-width: 100%;
-      }
+    .results{
+      margin-top:30px;padding:24px;background:#f0f4ff;border-radius:12px;border:3px solid #667eea;
+      opacity:0;transform:translateY(20px);transition:all .5s ease-out
     }
-    
-    @media (max-width: 768px) {
-      .header h1 {
-        font-size: 30px;
-      }
-      .section-title {
-        font-size: 24px;
-      }
-      .box-visual {
-        min-height: 350px;
-      }
+    .results.visible{opacity:1;transform:translateY(0)}
+    .results h3{margin:0 0 16px 0;color:#3f51b5;font-size:22px;font-weight:700}
+    .result-item{padding:15px;background:#fff;border-radius:10px;margin-bottom:15px;border-left:5px solid #667eea;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
+    .result-item.highlighted{background:#e9d5ff;border-left:8px solid #9333ea;padding:20px 15px}
+    .result-item.highlighted .result-label{color:#6d28d9;font-size:16px}
+    .result-item.highlighted .result-value{color:#9333ea;font-size:24px;font-weight:900}
+    .result-label{font-weight:600;color:#4a5568;margin-bottom:4px;font-size:14px}
+    .result-value{font-size:18px;color:#667eea;font-weight:700}
+    .results-layout{display:grid;grid-template-columns:1fr 1fr;gap:30px}
+
+    .box-visual{
+      background:#fff;border:2px solid #e2e8f0;border-radius:12px;padding:30px 15px;min-height:420px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.1);position:relative;display:flex;flex-direction:column;gap:16px
     }
-    
+    .original-vao-label{
+      margin-top:15px;padding:8px 15px;background:#fffbe0;border-radius:8px;font-size:14px;font-weight:600;color:#92400e;
+      border:1px solid #f59e0b;text-align:center;width:100%
+    }
+    .action-indicator{position:absolute;top:15px;right:15px;font-size:28px;color:#667eea;font-weight:bold;opacity:.8;z-index:10;line-height:1}
+
+    /* ------------------------------------------- */
+    /* ESTILOS NOVOS PARA A VISUALIZAÇÃO           */
+    /* (Antes inexistentes, por isso nada aparecia)*/
+    /* ------------------------------------------- */
+    .visualization-header{display:flex;flex-direction:column;gap:4px;text-align:center}
+    .project-title{font-weight:800;color:#1f2937}
+    .project-subtitle{font-size:12px;color:#6b7280}
+
+    /* Área que contém o desenho (centraliza e dá altura) */
+    .glass-diagram,.box-diagram{
+      flex:1;display:flex;align-items:flex-end;justify-content:center;
+      border:1px dashed #e5e7eb;border-radius:10px;background:linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%);
+      padding:12px; position:relative; overflow:hidden;
+    }
+
+    /* Peça única (porta/janela) */
+    .single-glass{
+      position:relative;border:3px solid rgba(0,0,0,0.08);border-radius:8px;display:flex;align-items:center;justify-content:center;
+      flex-direction:column;font-weight:700;backdrop-filter:saturate(120%) blur(0.3px);
+      transition:transform .2s ease; user-select:none;
+    }
+    .single-glass:hover{transform:translateY(-2px)}
+
+    /* Partes do box */
+    .box-part{
+      position:relative;border:3px solid rgba(0,0,0,0.08);border-radius:8px;margin:0 3px;
+      display:flex;align-items:center;justify-content:center;flex-direction:column;font-weight:700;user-select:none;
+      transition:transform .2s ease;
+    }
+    .box-part:hover{transform:translateY(-2px)}
+
+    /* Cores de vidro */
+    .glass-incolor{ background: linear-gradient(180deg, rgba(255,255,255,0.75), rgba(230,245,255,0.8)); }
+    .glass-verde  { background: linear-gradient(180deg, rgba(210,255,230,0.75), rgba(180,240,210,0.8)); }
+    .glass-fume   { background: linear-gradient(180deg, rgba(210,210,210,0.7), rgba(170,170,170,0.8)); }
+
+    /* Rótulos de dimensão (em px na tela, mas exibem mm) */
+    .dimension-width, .dimension-height{
+      position:absolute; font-size:11px; font-weight:800; color:#374151; background:#ffffffb3; padding:3px 6px;
+      border:1px solid #e5e7eb; border-radius:999px; backdrop-filter: blur(2px);
+    }
+    .dimension-width{ bottom:-10px; left:50%; transform:translateX(-50%); }
+    .dimension-height{ right:-10px; top:50%; transform:translateY(-50%) rotate(-90deg); }
+
+    /* Grade de medidas e specs */
+    .measurements-grid{
+      margin-top:8px; display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
+    }
+    .measurement-item{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:10px;text-align:center}
+    .measurement-label{font-size:12px;color:#6b7280}
+    .measurement-value{font-size:14px;font-weight:800;color:#111827}
+
+    .glass-specs{margin-top:8px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center}
+    .spec-item{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #e5e7eb;border-radius:999px;padding:6px 10px}
+    .spec-icon{
+      display:grid;place-items:center;width:22px;height:22px;border-radius:999px;background:#667eea;color:#fff;font-weight:900;font-size:12px
+    }
+    .spec-color{background:#0ea5e9} .spec-thickness{background:#10b981} .spec-type{background:#f59e0b}
+
+    .print-info{margin-top:6px;text-align:center;color:#6b7280;font-size:12px}
+
+    /* ------------------------------------------- */
+    /* Responsivo e Print */
+    /* ------------------------------------------- */
+    @media (max-width: 900px){ .results-layout{ grid-template-columns:1fr } .input-field{ min-width:100% } }
+    @media (max-width: 768px){ .header h1{font-size:30px} .section-title{font-size:24px} .box-visual{ min-height:350px } }
     @media print {
-      body {
-        background: white !important;
-        padding: 10px;
-      }
-      .header, .tabs, .calculator-section, .calculate-button {
-        display: none;
-      }
-      .content-card {
-        box-shadow: none;
-        padding: 0;
-      }
-      .results {
-        opacity: 1 !important;
-        transform: translateY(0) !important;
-        border: 1px solid #000;
-        background: white;
-        margin: 20px 0;
-      }
-      .box-visual {
-        border-color: #000 !important;
-        box-shadow: none !important;
-      }
-      .box-part, .single-glass {
-        border-color: #000 !important;
-        color: #000 !important;
-        background: #f0f0f0 !important; /* Tons de cinza para visualização */
-      }
-      .glass-incolor { background: white !important; }
-      .glass-verde { background: #e0e0e0 !important; }
-      .glass-fume { background: #c0c0c0 !important; }
-
-      .ferragens-info {
-          background: #f5f5f5;
-          border-color: #999;
-          color: #000;
-      }
-      .ferragens-info strong {
-          color: #000;
-      }
+      body{ background:#fff !important; padding:10px }
+      .header,.tabs,.calculator-section,.calculate-button{ display:none }
+      .content-card{ box-shadow:none; padding:0 }
+      .results{ opacity:1 !important; transform:none !important; border:1px solid #000; background:#fff; margin:20px 0 }
+      .box-visual{ border-color:#000 !important; box-shadow:none !important }
+      .box-part,.single-glass{ border-color:#000 !important; color:#000 !important; background:#f0f0f0 !important }
+      .glass-incolor{ background:#fff !important } .glass-verde{ background:#e0e0e0 !important } .glass-fume{ background:#c0c0c0 !important }
+      .ferragens-info{ background:#f5f5f5; border-color:#999; color:#000 } .ferragens-info strong{ color:#000 }
     }
   </style>
   <style>@view-transition { navigation: auto; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
-  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
- </head>
- <body>
+</head>
+<body>
   <div class="container">
-   <header class="header">
-    <h1 id="app-title">Sistema Vidraceiro Pro</h1>
-    <p id="company-name">Cálculos Rápidos e Medidas de Produção</p>
-   </header>
-   <div class="tabs">
-        <button class="tab-button active" data-tab="porta-pivotante">🚪 Porta Pivotante</button> 
-        <button class="tab-button" data-tab="janela-basculante">🪟 Janela Basculante</button> 
-        <button class="tab-button" data-tab="box">🚿 Box Padrão</button>
-   </div>
-   <div class="content-card">
-    <div id="porta-pivotante" class="tab-content">
-     <h2 class="section-title">Porta Pivotante - Cálculo de Produção</h2>
-     <div class="ferragens-info">
-        <span>🛠️</span> <strong>Ferragens Incluídas: Kit01 + Puxador</strong>
-     </div>
-     <div class="models-grid" id="porta-models"></div>
-     <div class="calculator-section">
-      <h3 style="margin-top: 0; color: #2d3748;">Calculadora de Medidas</h3>
-      <h4 style="color: #2d3748; margin: 20px 0 12px 0; font-weight: 700;">1. Medidas Totais do Vão (mm)</h4>
-      <div class="input-row">
-       <div class="input-field">
-           <label for="porta-altura">Altura **Total** do Vão (mm)</label> 
-           <input type="number" id="porta-altura" placeholder="Ex: 2100 mm" required>
-       </div>
-       <div class="input-field">
-           <label for="porta-largura">Largura **Total** do Vão (mm)</label> 
-           <input type="number" id="porta-largura" placeholder="Ex: 900 mm" required>
-       </div>
-      </div>
-      <div class="glass-options">
-       <h4 style="color: #2d3748; margin: 20px 0 12px 0; font-weight: 700;">2. Especificações do Vidro</h4>
-       <div class="input-row">
-        <div class="input-field"><label for="porta-glass-color">Cor do Vidro</label> <select id="porta-glass-color"> <option value="incolor">Incolor</option> <option value="verde">Verde</option> <option value="fume">Fumê</option> </select>
-        </div>
-        <div class="input-field"><label for="porta-glass-thickness">Espessura (mm)</label> <select id="porta-glass-thickness"> 
-            <option value="6">6mm</option> 
-            <option value="8" selected>8mm (Padrão)</option> 
-            <option value="10">10mm</option>
-        </select>
-        </div>
-        <div class="input-field"><label for="porta-glass-type">Tipo do Vidro</label> <select id="porta-glass-type"> <option value="temperado" selected>Temperado (Obrigatório)</option> </select>
-        </div>
-       </div>
-      </div>
-      
-      <button class="calculate-button" id="porta-calculate-btn">✅ Calcular e Visualizar Peça</button>
-      
-      <div id="porta-results" class="results hidden">
-       <div class="results-layout">
-        <div class="visual-section">
-         <h3>Representação Visual (Peça de Produção)</h3>
-         <div id="porta-visual" class="box-visual"></div>
-         <div class="original-vao-label" id="porta-original-vao-label" style="display: none;"></div>
-        </div>
-        <div class="specs-section">
-         <h3>Resumo Técnico</h3>
-         <div class="result-item highlighted">
-          <div class="result-label">
-           📐 Medidas de **PRODUÇÃO** (Corte)
-          </div>
-          <div class="result-value" id="porta-result-medidas">
-           -
-          </div>
-         </div>
-         <div class="result-item">
-          <div class="result-label">
-           Tipo de Produto
-          </div>
-          <div class="result-value">
-           Porta Pivotante
-          </div>
-         </div>
-         <div class="result-item">
-          <div class="result-label">
-           Vidro
-          </div>
-          <div class="result-value" id="porta-result-glass">
-           -
-          </div>
-         </div>
-         <div class="result-item">
-          <div class="result-label">
-           Ferragens
-          </div>
-          <div class="result-value">
-           Kit01 + Puxador
-          </div>
-         </div>
-        </div>
-       </div>
-      </div>
-     </div>
+    <header class="header">
+      <h1 id="app-title">Sistema Vidraceiro Pro</h1>
+      <p id="company-name">Cálculos Rápidos e Medidas de Produção</p>
+    </header>
+
+    <div class="tabs">
+      <button class="tab-button active" data-tab="porta-pivotante">🚪 Porta Pivotante</button>
+      <button class="tab-button" data-tab="janela-basculante">🪟 Janela Basculante</button>
+      <button class="tab-button" data-tab="box">🚿 Box Padrão</button>
     </div>
-    
-    <div id="janela-basculante" class="tab-content hidden">
-     <h2 class="section-title">Janela Basculante - Cálculo de Produção</h2>
-     <div class="ferragens-info">
-        <span>🛠️</span> <strong>Ferragens Incluídas: Kit06 + Roldana</strong>
-     </div>
-     <div class="models-grid" id="janela-models"></div>
-     <div class="calculator-section">
-      <h3 style="margin-top: 0; color: #2d3748;">Calculadora de Medidas</h3>
-       <h4 style="color: #2d3748; margin: 20px 0 12px 0; font-weight: 700;">1. Medidas Totais do Vão (mm)</h4>
-      <div class="input-row">
-       <div class="input-field">
-           <label for="janela-altura">Altura **Total** do Vão (mm)</label> 
-           <input type="number" id="janela-altura" placeholder="Ex: 1200 mm" required>
-       </div>
-       <div class="input-field">
-           <label for="janela-largura">Largura **Total** do Vão (mm)</label> 
-           <input type="number" id="janela-largura" placeholder="Ex: 1000 mm" required>
-       </div>
-      </div>
-      <div class="glass-options">
-       <h4 style="color: #2d3748; margin: 20px 0 12px 0; font-weight: 700;">2. Especificações do Vidro</h4>
-       <div class="input-row">
-        <div class="input-field"><label for="janela-glass-color">Cor do Vidro</label> <select id="janela-glass-color"> <option value="incolor">Incolor</option> <option value="verde">Verde</option> <option value="fume">Fumê</option> </select>
+
+    <div class="content-card">
+      <!-- PORTA -->
+      <section id="porta-pivotante" class="tab-content">
+        <h2 class="section-title">Porta Pivotante - Cálculo de Produção</h2>
+        <div class="ferragens-info"><span>🛠️</span> <strong>Ferragens Incluídas: Kit01 + Puxador</strong></div>
+
+        <div class="calculator-section">
+          <h3 style="margin-top:0;color:#2d3748;">Calculadora de Medidas</h3>
+
+          <h4 style="color:#2d3748;margin:20px 0 12px 0;font-weight:700;">1. Medidas Totais do Vão (mm)</h4>
+          <div class="input-row">
+            <div class="input-field">
+              <label for="porta-altura">Altura Total do Vão (mm)</label>
+              <input type="number" id="porta-altura" placeholder="Ex: 2100" required>
+            </div>
+            <div class="input-field">
+              <label for="porta-largura">Largura Total do Vão (mm)</label>
+              <input type="number" id="porta-largura" placeholder="Ex: 900" required>
+            </div>
+          </div>
+
+          <div class="glass-options">
+            <h4 style="color:#2d3748;margin:20px 0 12px 0;font-weight:700;">2. Especificações do Vidro</h4>
+            <div class="input-row">
+              <div class="input-field">
+                <label for="porta-glass-color">Cor do Vidro</label>
+                <select id="porta-glass-color">
+                  <option value="incolor">Incolor</option>
+                  <option value="verde">Verde</option>
+                  <option value="fume">Fumê</option>
+                </select>
+              </div>
+              <div class="input-field">
+                <label for="porta-glass-thickness">Espessura (mm)</label>
+                <select id="porta-glass-thickness">
+                  <option value="6">6mm</option>
+                  <option value="8" selected>8mm (Padrão)</option>
+                  <option value="10">10mm</option>
+                </select>
+              </div>
+              <div class="input-field">
+                <label for="porta-glass-type">Tipo do Vidro</label>
+                <select id="porta-glass-type">
+                  <option value="temperado" selected>Temperado (Obrigatório)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <button class="calculate-button" id="porta-calculate-btn">✅ Calcular e Visualizar Peça</button>
+
+          <div id="porta-results" class="results hidden">
+            <div class="results-layout">
+              <div class="visual-section">
+                <h3>Representação Visual (Peça de Produção)</h3>
+                <div id="porta-visual" class="box-visual"></div>
+                <div class="original-vao-label" id="porta-original-vao-label" style="display:none;"></div>
+              </div>
+              <div class="specs-section">
+                <h3>Resumo Técnico</h3>
+                <div class="result-item highlighted">
+                  <div class="result-label">📐 Medidas de PRODUÇÃO (Corte)</div>
+                  <div class="result-value" id="porta-result-medidas">-</div>
+                </div>
+                <div class="result-item"><div class="result-label">Tipo de Produto</div><div class="result-value">Porta Pivotante</div></div>
+                <div class="result-item"><div class="result-label">Vidro</div><div class="result-value" id="porta-result-glass">-</div></div>
+                <div class="result-item"><div class="result-label">Ferragens</div><div class="result-value">Kit01 + Puxador</div></div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="input-field"><label for="janela-glass-thickness">Espessura (mm)</label> <select id="janela-glass-thickness"> <option value="6" selected>6mm (Padrão)</option> <option value="8">8mm</option> </select>
+      </section>
+
+      <!-- JANELA -->
+      <section id="janela-basculante" class="tab-content hidden">
+        <h2 class="section-title">Janela Basculante - Cálculo de Produção</h2>
+        <div class="ferragens-info"><span>🛠️</span> <strong>Ferragens Incluídas: Kit06 + Roldana</strong></div>
+
+        <div class="calculator-section">
+          <h3 style="margin-top:0;color:#2d3748;">Calculadora de Medidas</h3>
+
+          <h4 style="color:#2d3748;margin:20px 0 12px 0;font-weight:700;">1. Medidas Totais do Vão (mm)</h4>
+          <div class="input-row">
+            <div class="input-field">
+              <label for="janela-altura">Altura Total do Vão (mm)</label>
+              <input type="number" id="janela-altura" placeholder="Ex: 1200" required>
+            </div>
+            <div class="input-field">
+              <label for="janela-largura">Largura Total do Vão (mm)</label>
+              <input type="number" id="janela-largura" placeholder="Ex: 1000" required>
+            </div>
+          </div>
+
+          <div class="glass-options">
+            <h4 style="color:#2d3748;margin:20px 0 12px 0;font-weight:700;">2. Especificações do Vidro</h4>
+            <div class="input-row">
+              <div class="input-field">
+                <label for="janela-glass-color">Cor do Vidro</label>
+                <select id="janela-glass-color">
+                  <option value="incolor">Incolor</option>
+                  <option value="verde">Verde</option>
+                  <option value="fume">Fumê</option>
+                </select>
+              </div>
+              <div class="input-field">
+                <label for="janela-glass-thickness">Espessura (mm)</label>
+                <select id="janela-glass-thickness">
+                  <option value="6" selected>6mm (Padrão)</option>
+                  <option value="8">8mm</option>
+                </select>
+              </div>
+              <div class="input-field">
+                <label for="janela-glass-type">Tipo do Vidro</label>
+                <select id="janela-glass-type">
+                  <option value="temperado" selected>Temperado</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <button class="calculate-button" id="janela-calculate-btn">✅ Calcular e Visualizar Peça</button>
+
+          <div id="janela-results" class="results hidden">
+            <div class="results-layout">
+              <div class="visual-section">
+                <h3>Representação Visual (Peça de Produção)</h3>
+                <div id="janela-visual" class="box-visual"></div>
+                <div class="original-vao-label" id="janela-original-vao-label" style="display:none;"></div>
+              </div>
+              <div class="specs-section">
+                <h3>Resumo Técnico</h3>
+                <div class="result-item highlighted">
+                  <div class="result-label">📐 Medidas de PRODUÇÃO (Corte)</div>
+                  <div class="result-value" id="janela-result-medidas">-</div>
+                </div>
+                <div class="result-item"><div class="result-label">Tipo de Produto</div><div class="result-value">Janela Basculante</div></div>
+                <div class="result-item"><div class="result-label">Vidro</div><div class="result-value" id="janela-result-glass">-</div></div>
+                <div class="result-item"><div class="result-label">Ferragens</div><div class="result-value">Kit06 + Roldana</div></div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="input-field"><label for="janela-glass-type">Tipo do Vidro</label> <select id="janela-glass-type"> <option value="temperado" selected>Temperado</option> </select>
+      </section>
+
+      <!-- BOX -->
+      <section id="box" class="tab-content hidden">
+        <h2 class="section-title">Box Padrão (Fixo + Porta) - Cálculo de Produção</h2>
+
+        <div class="calculator-section">
+          <h3 style="margin-top:0;color:#2d3748;">Calculadora de Medidas</h3>
+
+          <h4 style="color:#2d3748;margin:20px 0 12px 0;font-weight:700;">1. Medidas Totais do Vão (mm)</h4>
+          <div class="input-row">
+            <div class="input-field">
+              <label for="vao-altura">Altura Total do Vão (mm)</label>
+              <input type="number" id="vao-altura" placeholder="Ex: 2000" required>
+            </div>
+            <div class="input-field">
+              <label for="vao-largura">Largura Total do Vão (mm)</label>
+              <input type="number" id="vao-largura" placeholder="Ex: 1200" required>
+            </div>
+          </div>
+
+          <div class="glass-options">
+            <h4 style="color:#2d3748;margin:20px 0 12px 0;font-weight:700;">2. Especificações do Vidro</h4>
+            <div class="input-row">
+              <div class="input-field">
+                <label for="glass-color">Cor do Vidro</label>
+                <select id="glass-color">
+                  <option value="incolor">Incolor</option>
+                  <option value="verde">Verde</option>
+                  <option value="fume">Fumê</option>
+                </select>
+              </div>
+              <div class="input-field">
+                <label for="glass-thickness">Espessura (mm)</label>
+                <select id="glass-thickness">
+                  <option value="8" selected>8mm (Padrão)</option>
+                  <option value="10">10mm</option>
+                </select>
+              </div>
+              <div class="input-field">
+                <label for="glass-type">Tipo do Vidro</label>
+                <select id="glass-type">
+                  <option value="temperado" selected>Temperado (Obrigatório)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="checkbox-group">
+            <input type="checkbox" id="com-kit">
+            <label for="com-kit">Incluir Kit de Alumínio (Guia + Perfis)</label>
+          </div>
+
+          <button class="calculate-button" id="calculate-btn">✅ Calcular e Visualizar Peças</button>
+
+          <div id="results" class="results hidden">
+            <div class="results-layout">
+              <div class="visual-section">
+                <h3>Representação Visual (Peças de Produção)</h3>
+                <div id="box-visual" class="box-visual"></div>
+                <div class="original-vao-label" id="box-original-vao-label" style="display:none;"></div>
+              </div>
+              <div class="specs-section">
+                <h3>Resumo Técnico</h3>
+                <div class="result-item highlighted">
+                  <div class="result-label">📐 PORTA MÓVEL - Medida de PRODUÇÃO</div>
+                  <div class="result-value" id="result-movel">-</div>
+                </div>
+                <div class="result-item highlighted">
+                  <div class="result-label">📐 FIXO - Medida de PRODUÇÃO</div>
+                  <div class="result-value" id="result-fixo">-</div>
+                </div>
+                <div class="result-item"><div class="result-label">Tamanho Nominal do Box</div><div class="result-value" id="result-box-size">-</div></div>
+                <div class="result-item"><div class="result-label">Vidro</div><div class="result-value" id="result-glass">-</div></div>
+                <div class="result-item"><div class="result-label">Configuração</div><div class="result-value" id="result-config">-</div></div>
+              </div>
+            </div>
+          </div>
         </div>
-       </div>
-      </div>
-      
-      <button class="calculate-button" id="janela-calculate-btn">✅ Calcular e Visualizar Peça</button>
-      
-      <div id="janela-results" class="results hidden">
-       <div class="results-layout">
-        <div class="visual-section">
-         <h3>Representação Visual (Peça de Produção)</h3>
-         <div id="janela-visual" class="box-visual"></div>
-         <div class="original-vao-label" id="janela-original-vao-label" style="display: none;"></div>
-        </div>
-        <div class="specs-section">
-         <h3>Resumo Técnico</h3>
-         <div class="result-item highlighted">
-          <div class="result-label">
-           📐 Medidas de **PRODUÇÃO** (Corte)
-          </div>
-          <div class="result-value" id="janela-result-medidas">
-           -
-          </div>
-         </div>
-         <div class="result-item">
-          <div class="result-label">
-           Tipo de Produto
-          </div>
-          <div class="result-value">
-           Janela Basculante
-          </div>
-         </div>
-         <div class="result-item">
-          <div class="result-label">
-           Vidro
-          </div>
-          <div class="result-value" id="janela-result-glass">
-           -
-          </div>
-         </div>
-         <div class="result-item">
-          <div class="result-label">
-           Ferragens
-          </div>
-          <div class="result-value">
-           Kit06 + Roldana
-          </div>
-         </div>
-        </div>
-       </div>
-      </div>
-     </div>
+      </section>
+
     </div>
-    
-    <div id="box" class="tab-content hidden">
-     <h2 class="section-title">Box Padrão (Fixo + Porta) - Cálculo de Produção</h2>
-     <div class="calculator-section">
-      <h3 style="margin-top: 0; color: #2d3748;">Calculadora de Medidas</h3>
-      <h4 style="color: #2d3748; margin: 20px 0 12px 0; font-weight: 700;">1. Medidas Totais do Vão (mm)</h4>
-      <div class="input-row">
-       <div class="input-field"><label for="vao-altura">Altura **Total** do Vão (mm)</label> <input type="number" id="vao-altura" placeholder="Ex: 2000 mm" required>
-       </div>
-       <div class="input-field"><label for="vao-largura">Largura **Total** do Vão (mm)</label> <input type="number" id="vao-largura" placeholder="Ex: 1200 mm" required>
-       </div>
-      </div>
-      <div class="glass-options">
-       <h4 style="color: #2d3748; margin: 20px 0 12px 0; font-weight: 700;">2. Especificações do Vidro</h4>
-       <div class="input-row">
-        <div class="input-field"><label for="glass-color">Cor do Vidro</label> <select id="glass-color"> <option value="incolor">Incolor</option> <option value="verde">Verde</option> <option value="fume">Fumê</option> </select>
-        </div>
-        <div class="input-field"><label for="glass-thickness">Espessura (mm)</label> <select id="glass-thickness"> 
-            <option value="8" selected>8mm (Padrão)</option> 
-            <option value="10">10mm</option> 
-        </select>
-        </div>
-        <div class="input-field"><label for="glass-type">Tipo do Vidro</label> <select id="glass-type"> <option value="temperado" selected>Temperado (Obrigatório)</option> </select>
-        </div>
-       </div>
-      </div>
-      <div class="checkbox-group"><input type="checkbox" id="com-kit"> <label for="com-kit">Incluir Kit de Alumínio (Guia + Perfis)</label>
-      </div>
-      
-      <button class="calculate-button" id="calculate-btn">✅ Calcular e Visualizar Peças</button>
-      
-      <div id="results" class="results hidden">
-       <div class="results-layout">
-        <div class="visual-section">
-         <h3>Representação Visual (Peças de Produção)</h3>
-         <div id="box-visual" class="box-visual"></div>
-         <div class="original-vao-label" id="box-original-vao-label" style="display: none;"></div>
-        </div>
-        <div class="specs-section">
-         <h3>Resumo Técnico</h3>
-         <div class="result-item highlighted">
-          <div class="result-label">
-           📐 PORTA MÓVEL - Medida de **PRODUÇÃO**
-          </div>
-          <div class="result-value" id="result-movel">
-           -
-          </div>
-         </div>
-         <div class="result-item highlighted">
-          <div class="result-label">
-           📐 FIXO - Medida de **PRODUÇÃO**
-          </div>
-          <div class="result-value" id="result-fixo">
-           -
-          </div>
-         </div>
-         <div class="result-item">
-          <div class="result-label">
-           Tamanho Nominal do Box
-          </div>
-          <div class="result-value" id="result-box-size">
-           -
-          </div>
-         </div>
-         <div class="result-item">
-          <div class="result-label">
-           Vidro
-          </div>
-          <div class="result-value" id="result-glass">
-           -
-          </div>
-         </div>
-         <div class="result-item">
-          <div class="result-label">
-           Configuração
-          </div>
-          <div class="result-value" id="result-config">
-           -
-          </div>
-         </div>
-        </div>
-       </div>
-      </div>
-     </div>
-    </div>
-   </div>
   </div>
+
   <script>
     const defaultConfig = {
       app_title: "Sistema Vidraceiro Pro",
       company_name: "Cálculos Rápidos e Medidas de Produção"
     };
 
-    // Função de Ajuda para mostrar o resultado com transição
+    function clamp(n){ return Math.max(1, Math.round(n)); }
+
     function showResults(elementId) {
-        const resultsElement = document.getElementById(elementId);
-        resultsElement.classList.remove('hidden');
-        // Força o reflow para garantir que a transição ocorra
-        void resultsElement.offsetWidth;
-        resultsElement.classList.add('visible');
+      const el = document.getElementById(elementId);
+      el.classList.remove('hidden');
+      void el.offsetWidth; // força reflow para animar
+      el.classList.add('visible');
+      // scroll suave até os resultados
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    // Função para renderizar o visual de peça única (Porta/Janela)
+    /* ------------------------------------------- */
+    /* AJUSTES DE CÁLCULO/RENDER (corrigido)       */
+    /* ------------------------------------------- */
     function createSingleGlassVisualization(altura, largura, glassColor, type, glassThickness, glassType, ferragens, originalAltura, originalLargura) {
-      const totalSize = Math.max(largura, altura);
-      const scale = 250 / (totalSize === 0 ? 1 : totalSize); // Escala máxima de 250px
-      const visualWidth = largura * scale;
-      const visualHeight = altura * scale;
-      
-      const glassColorText = {
-        'incolor': 'Incolor',
-        'verde': 'Verde',
-        'fume': 'Fumê'
-      };
-      
+      // Proteção contra negativos e frações
+      altura = clamp(altura);
+      largura = clamp(largura);
+
+      const maxSide = Math.max(largura, altura);
+      const scale = 260 / (maxSide || 1);
+      const visualWidth  = Math.max(30, Math.round(largura * scale));
+      const visualHeight = Math.max(30, Math.round(altura * scale));
+
+      const glassColorText = { incolor:'Incolor', verde:'Verde', fume:'Fumê' };
       const typeText = type === 'PORTA' ? 'Porta Pivotante' : 'Janela Basculante';
-      
-      let indicator = '';
-      if (type === 'PORTA') {
-          indicator = '⟲'; // Símbolo de Pivô
-      } else if (type === 'JANELA') {
-          indicator = '⮙'; // Símbolo de Basculante
+      const indicator = type === 'PORTA' ? '⟲' : '⮙';
+
+      const labelId = `${type.toLowerCase()}-original-vao-label`;
+      const labelEl = document.getElementById(labelId);
+      if (labelEl){
+        labelEl.textContent = `Vão Original: ${clamp(originalLargura)}mm (L) x ${clamp(originalAltura)}mm (A)`;
+        labelEl.style.display = 'block';
       }
-      
-      document.getElementById(`${type.toLowerCase()}-original-vao-label`).textContent = `Vão Original: ${originalLargura}mm (L) x ${originalAltura}mm (A)`;
-      document.getElementById(`${type.toLowerCase()}-original-vao-label`).style.display = 'block';
 
       return `
         <div class="visualization-header">
           <div class="project-title">${typeText}</div>
-          <div class="project-subtitle">Peça Pronta - Medidas de Produção</div>
+          <div class="project-subtitle">Peça Pronta — Medidas de Produção</div>
         </div>
-        
+
         <div class="glass-diagram">
-          <div class="single-glass glass-${glassColor}" style="width: ${visualWidth}px; height: ${visualHeight}px;">
-            <span class="action-indicator">${indicator}</span>
+          <div class="single-glass glass-${glassColor}" style="width:${visualWidth}px;height:${visualHeight}px;">
+            <span class="action-indicator" title="${typeText}">${indicator}</span>
             <div>${type.toUpperCase()}</div>
-            <div style="font-size: 14px; margin-top: 8px; opacity: 0.8;">${largura} × ${altura}mm</div>
+            <div style="font-size:14px;margin-top:8px;opacity:.8;">${largura} × ${altura}mm</div>
             <div class="dimension-width">${largura}mm</div>
             <div class="dimension-height">${altura}mm</div>
           </div>
         </div>
-        
+
         <div class="measurements-grid">
-          <div class="measurement-item">
-            <div class="measurement-label">Largura</div>
-            <div class="measurement-value">${largura}mm</div>
-          </div>
-          <div class="measurement-item">
-            <div class="measurement-label">Altura</div>
-            <div class="measurement-value">${altura}mm</div>
-          </div>
-          <div class="measurement-item">
-            <div class="measurement-label">Área Total</div>
-            <div class="measurement-value">${((largura * altura) / 1000000).toFixed(2)}m²</div>
-          </div>
+          <div class="measurement-item"><div class="measurement-label">Largura</div><div class="measurement-value">${largura}mm</div></div>
+          <div class="measurement-item"><div class="measurement-label">Altura</div><div class="measurement-value">${altura}mm</div></div>
+          <div class="measurement-item"><div class="measurement-label">Área Total</div><div class="measurement-value">${((largura*altura)/1_000_000).toFixed(2)} m²</div></div>
         </div>
-        
+
         <div class="glass-specs">
-          <div class="spec-item">
-            <div class="spec-icon spec-color">C</div>
-            <span>${glassColorText[glassColor]}</span>
-          </div>
-          <div class="spec-item">
-            <div class="spec-icon spec-thickness">E</div>
-            <span>${glassThickness}mm</span>
-          </div>
-          <div class="spec-item">
-            <div class="spec-icon spec-type">T</div>
-            <span>${glassType.charAt(0).toUpperCase() + glassType.slice(1)}</span>
-          </div>
+          <div class="spec-item"><div class="spec-icon spec-color">C</div><span>${glassColorText[glassColor]}</span></div>
+          <div class="spec-item"><div class="spec-icon spec-thickness">E</div><span>${glassThickness}mm</span></div>
+          <div class="spec-item"><div class="spec-icon spec-type">T</div><span>${glassType[0].toUpperCase()+glassType.slice(1)}</span></div>
+          <div class="spec-item"><div class="spec-icon" style="background:#6366f1;">F</div><span>${ferragens}</span></div>
         </div>
-        
-        <div class="print-info">
-          Gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}
-        </div>
+
+        <div class="print-info">Gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}</div>
       `;
     }
 
-    // Função para renderizar o visual do Box
     function createBoxVisualization(alturaMovel, larguraMovel, alturaFixo, larguraFixo, glassColor, glassThickness, glassType, comKit, originalAltura, originalLargura) {
-      const totalWidth = larguraMovel + larguraFixo;
-      const maxHeight = Math.max(alturaMovel, alturaFixo);
-      
-      const scale = 250 / Math.max(totalWidth, maxHeight);
-      const visualMovelWidth = larguraMovel * scale;
-      const visualFixoWidth = larguraFixo * scale;
-      const visualHeight = maxHeight * scale;
-      
-      const glassColorText = {
-        'incolor': 'Incolor',
-        'verde': 'Verde',
-        'fume': 'Fumê'
-      };
+      // Proteções e arredondamento
+      alturaMovel  = clamp(alturaMovel);
+      larguraMovel = clamp(larguraMovel);
+      alturaFixo   = clamp(alturaFixo);
+      larguraFixo  = clamp(larguraFixo);
 
-      document.getElementById('box-original-vao-label').textContent = `Vão Original: ${originalLargura}mm (L) x ${originalAltura}mm (A)`;
-      document.getElementById('box-original-vao-label').style.display = 'block';
-      
+      const totalWidth = larguraMovel + larguraFixo;
+      const maxHeight  = Math.max(alturaMovel, alturaFixo);
+      const scale = 260 / Math.max(totalWidth, maxHeight);
+      const vwMovel = Math.max(26, Math.round(larguraMovel * scale));
+      const vwFixo  = Math.max(26, Math.round(larguraFixo  * scale));
+      const vHeight = Math.max(40, Math.round(maxHeight * scale));
+
+      const glassColorText = { incolor:'Incolor', verde:'Verde', fume:'Fumê' };
+
+      const labelEl = document.getElementById('box-original-vao-label');
+      if (labelEl){
+        labelEl.textContent = `Vão Original: ${clamp(originalLargura)}mm (L) x ${clamp(originalAltura)}mm (A)`;
+        labelEl.style.display = 'block';
+      }
+
       return `
         <div class="visualization-header">
           <div class="project-title">Box para Banheiro (Fixo + Móvel)</div>
-          <div class="project-subtitle">Projeto Técnico - Medidas de Produção</div>
+          <div class="project-subtitle">Projeto Técnico — Medidas de Produção</div>
         </div>
-        
-        <div class="box-diagram" style="width: ${visualMovelWidth + visualFixoWidth + 6}px; height: ${visualHeight}px;">
-          <div class="box-part movel glass-${glassColor}" style="width: ${visualMovelWidth}px; height: ${visualHeight}px;">
+
+        <div class="box-diagram" style="height:${vHeight + 20}px;">
+          <div class="box-part movel glass-${glassColor}" style="width:${vwMovel}px;height:${vHeight}px;">
             <div>PORTA MÓVEL</div>
-            <div style="font-size: 12px; margin-top: 6px; opacity: 0.8;">${larguraMovel} × ${alturaMovel}mm</div>
+            <div style="font-size:12px;margin-top:6px;opacity:.8;">${larguraMovel} × ${alturaMovel}mm</div>
             <div class="dimension-width">${larguraMovel}mm</div>
           </div>
-          <div class="box-part fixo glass-${glassColor}" style="width: ${visualFixoWidth}px; height: ${visualHeight}px;">
+
+          <div class="box-part fixo glass-${glassColor}" style="width:${vwFixo}px;height:${vHeight}px;">
             <div>FIXO</div>
-            <div style="font-size: 12px; margin-top: 6px; opacity: 0.8;">${larguraFixo} × ${alturaFixo}mm</div>
+            <div style="font-size:12px;margin-top:6px;opacity:.8;">${larguraFixo} × ${alturaFixo}mm</div>
             <div class="dimension-width">${larguraFixo}mm</div>
           </div>
+
           <div class="dimension-height">${maxHeight}mm</div>
         </div>
-        
+
         <div class="measurements-grid">
-          <div class="measurement-item">
-            <div class="measurement-label">Total Vão</div>
-            <div class="measurement-value">${originalLargura}mm</div>
-          </div>
-          <div class="measurement-item">
-            <div class="measurement-label">Área Total Vidro</div>
-            <div class="measurement-value">${((larguraMovel * alturaMovel + larguraFixo * alturaFixo) / 1000000).toFixed(2)}m²</div>
-          </div>
+          <div class="measurement-item"><div class="measurement-label">Total Vão</div><div class="measurement-value">${clamp(originalLargura)}mm</div></div>
+          <div class="measurement-item"><div class="measurement-label">Altura Máxima</div><div class="measurement-value">${clamp(originalAltura)}mm</div></div>
+          <div class="measurement-item"><div class="measurement-label">Área Total Vidro</div><div class="measurement-value">${((larguraMovel*alturaMovel + larguraFixo*alturaFixo)/1_000_000).toFixed(2)} m²</div></div>
         </div>
-        
+
         <div class="glass-specs">
-          <div class="spec-item">
-            <div class="spec-icon spec-color">C</div>
-            <span>${glassColorText[glassColor]}</span>
-          </div>
-          <div class="spec-item">
-            <div class="spec-icon spec-thickness">E</div>
-            <span>${glassThickness}mm</span>
-          </div>
-          <div class="spec-item">
-            <div class="spec-icon spec-type">T</div>
-            <span>${glassType.charAt(0).toUpperCase() + glassType.slice(1)}</span>
-          </div>
-          ${comKit ? '<div class="spec-item"><div class="spec-icon" style="background: #10b981;">KIT</div><span>Com Kit Alumínio</span></div>' : ''}
+          <div class="spec-item"><div class="spec-icon spec-color">C</div><span>${glassColorText[glassColor]}</span></div>
+          <div class="spec-item"><div class="spec-icon spec-thickness">E</div><span>${glassThickness}mm</span></div>
+          <div class="spec-item"><div class="spec-icon spec-type">T</div><span>${glassType[0].toUpperCase()+glassType.slice(1)}</span></div>
+          ${comKit ? '<div class="spec-item"><div class="spec-icon" style="background:#10b981;">KIT</div><span>Com Kit Alumínio</span></div>' : ''}
         </div>
-        
-        <div class="print-info">
-          Gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}
-        </div>
+
+        <div class="print-info">Gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}</div>
       `;
     }
 
-    // Função para determinar o "tamanho nominal" do box (para rótulo)
     function determineBoxSizeLabel(largura) {
       if (largura <= 1000) return 'Box Pequeno';
       if (largura <= 1400) return 'Box Médio';
@@ -851,135 +582,132 @@
     function setupTabs() {
       const tabButtons = document.querySelectorAll('.tab-button');
       const tabContents = document.querySelectorAll('.tab-content');
-      
+
       tabButtons.forEach(button => {
         button.addEventListener('click', () => {
           const tabName = button.dataset.tab;
-          
           tabButtons.forEach(btn => btn.classList.remove('active'));
           button.classList.add('active');
-          
+
           tabContents.forEach(content => {
             content.classList.add('hidden');
-            content.classList.remove('visible'); // Oculta a transição antiga
-            if (content.id === tabName) {
-              content.classList.remove('hidden');
-            }
+            if (content.id === tabName) content.classList.remove('hidden');
           });
         });
       });
     }
 
+    /* ------------------------------------------- */
+    /* CÁLCULOS                                    */
+    /* ------------------------------------------- */
     function calculateBox() {
-      const altura = parseFloat(document.getElementById('vao-altura').value);
+      const altura  = parseFloat(document.getElementById('vao-altura').value);
       const largura = parseFloat(document.getElementById('vao-largura').value);
-      const comKit = document.getElementById('com-kit').checked;
+      const comKit  = document.getElementById('com-kit').checked;
       const glassColor = document.getElementById('glass-color').value;
       const glassThickness = document.getElementById('glass-thickness').value;
       const glassType = document.getElementById('glass-type').value;
-      
+
       if (!altura || !largura || altura <= 0 || largura <= 0) {
-        alert('Por favor, preencha a Altura e Largura Totais do Vão com valores válidos.');
+        alert('Preencha Altura e Largura do vão com valores válidos.');
         return;
       }
-      
-      // Cálculo das medidas de produção (Exemplo simples: Box de canto 1 Fixo, 1 Móvel)
-      // Ajuste de Altura do Box (Geralmente Altura - 50mm para o kit)
-      const alturaBase = altura - 50; 
-      
-      // Largura: Divisão (Fixo + Móvel) com ajustes
-      const larguraBase = largura / 2; 
-      const larguraMovel = larguraBase + 50; // Largura do Móvel
-      const larguraFixo = larguraBase; // Largura do Fixo (Medida de corte)
-      
-      // Alturas de corte (Box de 1,90m e 2,00m são comuns)
-      const alturaProducaoMovel = alturaBase - 20; 
-      const alturaProducaoFixo = alturaBase - 20; 
-      
-      // Atualiza a visualização
-      const visualization = createBoxVisualization(alturaProducaoMovel, larguraMovel, alturaProducaoFixo, larguraFixo, glassColor, glassThickness, glassType, comKit, altura, largura);
-      document.getElementById('box-visual').innerHTML = visualization;
-      
-      // Atualiza os resultados
+
+      // Heurística simples de produção (exemplo)
+      const alturaBase = altura - 50;
+      const larguraBase = largura / 2;
+
+      const larguraMovel = clamp(larguraBase + 50);
+      const larguraFixo  = clamp(larguraBase);
+      const alturaProducaoMovel = clamp(alturaBase - 20);
+      const alturaProducaoFixo  = clamp(alturaBase - 20);
+
+      const viz = createBoxVisualization(
+        alturaProducaoMovel, larguraMovel,
+        alturaProducaoFixo,  larguraFixo,
+        glassColor, glassThickness, glassType, comKit,
+        altura, largura
+      );
+      document.getElementById('box-visual').innerHTML = viz;
+
       document.getElementById('result-box-size').textContent = determineBoxSizeLabel(largura);
-      document.getElementById('result-movel').textContent = `${larguraMovel}mm (L) x ${alturaProducaoMovel}mm (A)`;
-      document.getElementById('result-fixo').textContent = `${larguraFixo}mm (L) x ${alturaProducaoFixo}mm (A)`;
-      
-      const glassColorText = { 'incolor': 'Incolor', 'verde': 'Verde', 'fume': 'Fumê' };
-      
-      document.getElementById('result-glass').textContent = 
-        `${glassColorText[glassColor]} ${glassThickness}mm ${glassType.charAt(0).toUpperCase() + glassType.slice(1)}`;
-      document.getElementById('result-config').textContent = 
+      document.getElementById('result-movel').textContent = `${larguraMovel}mm (L) × ${alturaProducaoMovel}mm (A)`;
+      document.getElementById('result-fixo').textContent  = `${larguraFixo}mm (L) × ${alturaProducaoFixo}mm (A)`;
+
+      const glassColorText = { incolor:'Incolor', verde:'Verde', fume:'Fumê' };
+      document.getElementById('result-glass').textContent =
+        `${glassColorText[glassColor]} ${glassThickness}mm ${glassType[0].toUpperCase()+glassType.slice(1)}`;
+      document.getElementById('result-config').textContent =
         `Box Padrão ${comKit ? 'COM Kit de Alumínio' : 'SEM Kit de Alumínio'}`;
-      
+
       showResults('results');
     }
 
     function calculatePorta() {
-      const altura = parseFloat(document.getElementById('porta-altura').value);
+      const altura  = parseFloat(document.getElementById('porta-altura').value);
       const largura = parseFloat(document.getElementById('porta-largura').value);
       const glassColor = document.getElementById('porta-glass-color').value;
       const glassThickness = document.getElementById('porta-glass-thickness').value;
       const glassType = document.getElementById('porta-glass-type').value;
-      
+
       if (!altura || !largura || altura <= 0 || largura <= 0) {
-        alert('Por favor, preencha a Altura e Largura Totais do Vão com valores válidos.');
+        alert('Preencha Altura e Largura do vão com valores válidos.');
         return;
       }
-      
-      // Cálculos das medidas de produção (Exemplo: altura -15, largura -7)
-      const alturaProducao = altura - 15;
-      const larguraProducao = largura - 7;
-      
-      // Atualiza a visualização
-      const visualization = createSingleGlassVisualization(alturaProducao, larguraProducao, glassColor, 'PORTA', glassThickness, glassType, 'Kit01 + Puxador', altura, largura);
-      document.getElementById('porta-visual').innerHTML = visualization;
-      
-      // Atualiza os resultados
-      document.getElementById('porta-result-medidas').textContent = `${larguraProducao}mm (L) x ${alturaProducao}mm (A)`;
-      
-      const glassColorText = { 'incolor': 'Incolor', 'verde': 'Verde', 'fume': 'Fumê' };
-      
-      document.getElementById('porta-result-glass').textContent = 
-        `${glassColorText[glassColor]} ${glassThickness}mm ${glassType.charAt(0).toUpperCase() + glassType.slice(1)}`;
-      
+
+      // Exemplo de desconto
+      const alturaProducao  = clamp(altura - 15);
+      const larguraProducao = clamp(largura - 7);
+
+      const viz = createSingleGlassVisualization(
+        alturaProducao, larguraProducao, glassColor, 'PORTA',
+        glassThickness, glassType, 'Kit01 + Puxador',
+        altura, largura
+      );
+      document.getElementById('porta-visual').innerHTML = viz;
+
+      const glassColorText = { incolor:'Incolor', verde:'Verde', fume:'Fumê' };
+      document.getElementById('porta-result-medidas').textContent = `${larguraProducao}mm (L) × ${alturaProducao}mm (A)`;
+      document.getElementById('porta-result-glass').textContent =
+        `${glassColorText[glassColor]} ${glassThickness}mm ${glassType[0].toUpperCase()+glassType.slice(1)}`;
+
       showResults('porta-results');
     }
 
     function calculateJanela() {
-      const altura = parseFloat(document.getElementById('janela-altura').value);
+      const altura  = parseFloat(document.getElementById('janela-altura').value);
       const largura = parseFloat(document.getElementById('janela-largura').value);
       const glassColor = document.getElementById('janela-glass-color').value;
       const glassThickness = document.getElementById('janela-glass-thickness').value;
       const glassType = document.getElementById('janela-glass-type').value;
-      
+
       if (!altura || !largura || altura <= 0 || largura <= 0) {
-        alert('Por favor, preencha a Altura e Largura Totais do Vão com valores válidos.');
+        alert('Preencha Altura e Largura do vão com valores válidos.');
         return;
       }
-      
-      // Cálculos das medidas de produção (Exemplo: altura -7, largura -15)
-      const alturaProducao = altura - 7;
-      const larguraProducao = largura - 15;
-      
-      // Atualiza a visualização
-      const visualization = createSingleGlassVisualization(alturaProducao, larguraProducao, glassColor, 'JANELA', glassThickness, glassType, 'Kit06 + Roldana', altura, largura);
-      document.getElementById('janela-visual').innerHTML = visualization;
-      
-      // Atualiza os resultados
-      document.getElementById('janela-result-medidas').textContent = `${larguraProducao}mm (L) x ${alturaProducao}mm (A)`;
-      
-      const glassColorText = { 'incolor': 'Incolor', 'verde': 'Verde', 'fume': 'Fumê' };
-      
-      document.getElementById('janela-result-glass').textContent = 
-        `${glassColorText[glassColor]} ${glassThickness}mm ${glassType.charAt(0).toUpperCase() + glassType.slice(1)}`;
-      
+
+      // Exemplo de desconto
+      const alturaProducao  = clamp(altura - 7);
+      const larguraProducao = clamp(largura - 15);
+
+      const viz = createSingleGlassVisualization(
+        alturaProducao, larguraProducao, glassColor, 'JANELA',
+        glassThickness, glassType, 'Kit06 + Roldana',
+        altura, largura
+      );
+      document.getElementById('janela-visual').innerHTML = viz;
+
+      const glassColorText = { incolor:'Incolor', verde:'Verde', fume:'Fumê' };
+      document.getElementById('janela-result-medidas').textContent = `${larguraProducao}mm (L) × ${alturaProducao}mm (A)`;
+      document.getElementById('janela-result-glass').textContent =
+        `${glassColorText[glassColor]} ${glassThickness}mm ${glassType[0].toUpperCase()+glassType.slice(1)}`;
+
       showResults('janela-results');
     }
 
     async function onConfigChange(config) {
-      document.getElementById('app-title').textContent = config.app_title || defaultConfig.app_title;
-      document.getElementById('company-name').textContent = config.company_name || defaultConfig.company_name;
+      document.getElementById('app-title').textContent   = config.app_title   || defaultConfig.app_title;
+      document.getElementById('company-name').textContent= config.company_name|| defaultConfig.company_name;
     }
 
     if (window.elementSdk) {
@@ -987,44 +715,27 @@
         defaultConfig,
         onConfigChange,
         mapToCapabilities: (config) => ({
-          recolorables: [
-            {
-              get: () => config.primary_color || "#667eea",
-              set: (value) => {
-                config.primary_color = value;
-                window.elementSdk.setConfig({ primary_color: value });
-              }
-            }
-          ],
+          recolorables: [{
+            get: () => config.primary_color || "#667eea",
+            set: (value) => { config.primary_color = value; window.elementSdk.setConfig({ primary_color: value }); }
+          }],
           borderables: [],
           fontEditable: undefined,
           fontSizeable: undefined
         }),
         mapToEditPanelValues: (config) => new Map([
-          ["app_title", config.app_title || defaultConfig.app_title],
-          ["company_name", config.company_name || defaultConfig.company_name]
+          ["app_title",   config.app_title   || defaultConfig.app_title],
+          ["company_name",config.company_name|| defaultConfig.company_name]
         ])
       });
     }
 
+    // Init
     setupTabs();
-    
-    document.getElementById('calculate-btn').addEventListener('click', (e) => {
-      e.preventDefault();
-      calculateBox();
-    });
-    
-    document.getElementById('porta-calculate-btn').addEventListener('click', (e) => {
-      e.preventDefault();
-      calculatePorta();
-    });
-    
-    document.getElementById('janela-calculate-btn').addEventListener('click', (e) => {
-      e.preventDefault();
-      calculateJanela();
-    });
-    
+    document.getElementById('calculate-btn').addEventListener('click', e => { e.preventDefault(); calculateBox(); });
+    document.getElementById('porta-calculate-btn').addEventListener('click', e => { e.preventDefault(); calculatePorta(); });
+    document.getElementById('janela-calculate-btn').addEventListener('click', e => { e.preventDefault(); calculateJanela(); });
     onConfigChange(defaultConfig);
   </script>
- </body>
+</body>
 </html>
